@@ -15,4 +15,4 @@ class TestHealthApi(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
         response_data = response.json()
-        self.assertEqual(response_data["message"], "All system operating")
+        self.assertEqual("All system operating", response_data["message"])
