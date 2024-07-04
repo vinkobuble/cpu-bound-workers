@@ -19,6 +19,6 @@ class Matrix(BaseModel):
         return data
 
 
-class MultiplyMatrices(BaseModel):
+class MultiplyMatricesRequestBody(BaseModel):
     a: Matrix
     b: Matrix
