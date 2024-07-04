@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "cpu-bound-workers"
+version = "0.1.0"
+description = "CPU-bound worker scaling example"
+authors = ["Vinko Buble <vinkobuble@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "3.12.4"
+pika = "1.3.2"
+numpy = "2.0.0"
+pydantic = "^2.8.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,3 @@
+from matrix_multiplication import schema
+
+MultiplyMatricesWorkerRequest = schema.MultiplyMatricesRequestBody
