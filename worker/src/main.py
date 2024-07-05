@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 def main():
     """Main method."""
     credentials = pika.PlainCredentials(os.environ['RABBITMQ_USER'], os.environ['RABBITMQ_PASSWORD'])
-    parameters = pika.ConnectionParameters(os.environ['RABBIT_MQ_HOST'], credentials=credentials)
+    parameters = pika.ConnectionParameters(os.environ['RABBITMQ_HOST'], credentials=credentials)
     connection = pika.BlockingConnection(parameters)
 
     channel = connection.channel()

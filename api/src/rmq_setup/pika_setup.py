@@ -4,7 +4,7 @@ import pika
 
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(
-        host=os.environ['RABBIT_MQ_HOST']
+        host=os.environ['RABBITMQ_HOST']
     )
 )
 channel = connection.channel()
