@@ -42,10 +42,32 @@
       "value": "rabbitmq-cluster-id-TQ_5DP8J8JjPyTFLpn9McA"
     }
   ],
-  "policies": [],
+  "policies": [
+    {
+      "vhost": "/",
+      "name": "delivery-limit",
+      "pattern": "matrix-multiplication-worker",
+      "apply-to": "queues",
+      "definition": {
+        "delivery-limit": 5
+      },
+      "priority": 1
+    }
+  ],
   "queues": [
     {
       "name": "matrix-multiplication-worker",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "matrix-multiplication",
+        "x-dead-letter-routing-key": "dlq",
+        "x-queue-type": "quorum"
+      }
+    },
+    {
+      "name": "matrix-multiplication-worker-dlq",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -64,6 +86,14 @@
     }
   ],
   "bindings": [
+    {
+      "source": "matrix-multiplication",
+      "vhost": "/",
+      "destination": "matrix-multiplication-worker-dlq",
+      "destination_type": "queue",
+      "routing_key": "dlq",
+      "arguments": {}
+    },
     {
       "source": "matrix-multiplication",
       "vhost": "/",

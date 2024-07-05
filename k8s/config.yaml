@@ -22,7 +22,7 @@ metadata:
   namespace: cpu-bound-workers
 data:
   definitions.json: |
-    {  "rabbit_version": "3.13.4",  "rabbitmq_version": "3.13.4",  "product_name": "RabbitMQ",  "product_version": "3.13.4",  "users": [    {      "name": "guest",      "password_hash": "XxT7aqXuhRN0MIi7UP0j4Bb5Yr1y7LA4p3DkAxr6pF1uimjl",      "hashing_algorithm": "rabbit_password_hashing_sha256",      "tags": [        "administrator"      ],      "limits": {}    }  ],  "vhosts": [    {      "name": "/",      "description": "Default virtual host",      "tags": [],      "metadata": {        "description": "Default virtual host",        "tags": []      }    }  ],  "permissions": [    {      "user": "guest",      "vhost": "/",      "configure": ".*",      "write": ".*",      "read": ".*"    }  ],  "topic_permissions": [],  "parameters": [],  "global_parameters": [    {      "name": "internal_cluster_id",      "value": "rabbitmq-cluster-id-TQ_5DP8J8JjPyTFLpn9McA"    }  ],  "policies": [],  "queues": [    {      "name": "matrix-multiplication-worker",      "vhost": "/",      "durable": true,      "auto_delete": false,      "arguments": {}    }  ],  "exchanges": [    {      "name": "matrix-multiplication",      "vhost": "/",      "type": "direct",      "durable": true,      "auto_delete": false,      "internal": false,      "arguments": {}    }  ],  "bindings": [    {      "source": "matrix-multiplication",      "vhost": "/",      "destination": "matrix-multiplication-worker",      "destination_type": "queue",      "routing_key": "worker",      "arguments": {}    }  ]}
+    {"rabbit_version":"3.13.4","rabbitmq_version":"3.13.4","product_name":"RabbitMQ","product_version":"3.13.4","users":[{"name":"guest","password_hash":"XxT7aqXuhRN0MIi7UP0j4Bb5Yr1y7LA4p3DkAxr6pF1uimjl","hashing_algorithm":"rabbit_password_hashing_sha256","tags":["administrator"],"limits":{}}],"vhosts":[{"name":"/","description":"Default virtual host","tags":[],"metadata":{"description":"Default virtual host","tags":[]}}],"permissions":[{"user":"guest","vhost":"/","configure":".*","write":".*","read":".*"}],"topic_permissions":[],"parameters":[],"global_parameters":[{"name":"internal_cluster_id","value":"rabbitmq-cluster-id-TQ_5DP8J8JjPyTFLpn9McA"}],"policies":[{"vhost":"/","name":"delivery-limit","pattern":"matrix-multiplication-worker","apply-to":"queues","definition":{"delivery-limit":5},"priority":1}],"queues":[{"name":"matrix-multiplication-worker","vhost":"/","durable":true,"auto_delete":false,"arguments":{"x-dead-letter-exchange":"matrix-multiplication","x-dead-letter-routing-key":"dlq","x-queue-type":"quorum"}},{"name":"matrix-multiplication-worker-dlq","vhost":"/","durable":true,"auto_delete":false,"arguments":{}}],"exchanges":[{"name":"matrix-multiplication","vhost":"/","type":"direct","durable":true,"auto_delete":false,"internal":false,"arguments":{}}],"bindings":[{"source":"matrix-multiplication","vhost":"/","destination":"matrix-multiplication-worker-dlq","destination_type":"queue","routing_key":"dlq","arguments":{}},{"source":"matrix-multiplication","vhost":"/","destination":"matrix-multiplication-worker","destination_type":"queue","routing_key":"worker","arguments":{}}]}
   enabled_plugins: |
     [rabbitmq_management,rabbitmq_prometheus].
   rabbitmq.conf: |
@@ -165,7 +165,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: cpu-bound-worker-service:2
+        image: cpu-bound-worker-service:6
         imagePullPolicy: IfNotPresent
         env:
         - name: RABBITMQ_HOST
