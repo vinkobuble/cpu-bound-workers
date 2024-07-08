@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: worker-hpa
+  namespace: cpu-bound-workers
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: worker
+  minReplicas: 1
+  maxReplicas: 100
+  metrics:
+  - type: External
+    external:
+      metric:
+        name: custom.googleapis.com|external|desired_worker_scale
+      target:
+        type: Value
+        value: 1

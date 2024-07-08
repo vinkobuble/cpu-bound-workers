@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: worker-service-monitor
+  namespace: cpu-bound-workers
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: monitoring
+  endpoints:
+  - port: http
+    path: /desired-worker-scale/
+    interval: 30s

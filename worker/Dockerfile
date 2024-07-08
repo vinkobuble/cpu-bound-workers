@@ -1,7 +1,5 @@
 FROM python:3.12.4
 
-COPY ./src /app
-
 WORKDIR /app
 
 # Setup Poetry
@@ -13,5 +11,7 @@ ENV PATH="$POETRY_HOME/bin:$PATH"
 COPY ./pyproject.toml ./poetry.lock ./
 RUN poetry config virtualenvs.create false
 RUN poetry install --only main
+
+COPY ./src /app
 
 CMD ["python", "main.py"]

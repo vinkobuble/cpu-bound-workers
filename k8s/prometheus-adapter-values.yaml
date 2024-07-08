@@ -1,0 +1,10 @@
+rules:
+  default: false
+  custom:
+    - seriesQuery: 'desired_worker_scale'
+      resources:
+        overrides:
+          namespace: {resource: "namespace"}
+      name:
+        as: "custom.googleapis.com|external|desired_worker_scale"
+      metricsQuery: 'desired-worker-scale{<<.LabelMatchers>>}'

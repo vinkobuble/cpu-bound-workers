@@ -107,6 +107,50 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: monitoring
+  namespace: cpu-bound-workers
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: monitoring
+  template:
+    metadata:
+      labels:
+        app: monitoring
+    spec:
+      containers:
+      - name: monitoring
+        image: cpu-bound-worker-monitoring-api:3
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        env:
+        - name: RABBITMQ_HOST
+          value: "rabbitmq-service"
+        - name: MATRIX_MULTIPLICATION_EXCHANGE
+          value: "matrix-multiplication"
+        - name: MATRIX_MULTIPLICATION_WORKER_ROUTING_KEY
+          value: "worker"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitoring
+  namespace: cpu-bound-workers
+spec:
+  selector:
+    app: monitoring
+  ports:
+    - port: 8006
+      targetPort: 80
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: api
   namespace: cpu-bound-workers
 spec:
@@ -121,7 +165,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: cpu-bound-worker-api:1
+        image: cpu-bound-worker-api:4
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
@@ -165,7 +209,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: cpu-bound-worker-service:6
+        image: cpu-bound-worker-service:7
         imagePullPolicy: IfNotPresent
         env:
         - name: RABBITMQ_HOST
@@ -178,3 +222,5 @@ spec:
           value: "localhost"
         - name: MATRIX_MULTIPLICATION_WORKER_QUEUE
           value: "matrix-multiplication-worker"
+        - name: SIMULATE_WORKLOAD_IN_SEC
+          value: "20"
