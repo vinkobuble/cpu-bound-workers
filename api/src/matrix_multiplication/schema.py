@@ -10,8 +10,8 @@ class Matrix(BaseModel):
     @field_validator('data', mode='after')
     @classmethod
     def validate_data_size(cls, data: List[List[float]], info: ValidationInfo) -> List[List[float]]:
-        # if len(data) == 0:
-        #     raise ValueError("data cannot be empty.")
+        if len(data) == 0:
+            raise ValueError("data cannot be empty.")
         n = len(data[0])
         for row in data:
             if len(row) != n:

@@ -17,4 +17,4 @@ spec:
         name: custom.googleapis.com|external|desired_worker_scale
       target:
         type: Value
-        value: 1
+        value: "1"

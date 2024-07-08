@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cpu-bound-workers
-
+# TODO: Configure nginx to reverse proxy API service.
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -121,17 +121,22 @@ spec:
     spec:
       containers:
       - name: monitoring
-        image: cpu-bound-worker-monitoring-api:3
+        image: cpu-bound-worker-monitoring-api:1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
+        # TODO: Move to secret vault
         - name: RABBITMQ_HOST
           value: "rabbitmq-service"
-        - name: MATRIX_MULTIPLICATION_EXCHANGE
-          value: "matrix-multiplication"
-        - name: MATRIX_MULTIPLICATION_WORKER_ROUTING_KEY
-          value: "worker"
+        - name: RABBITMQ_USER
+          value: "guest"
+        - name: RABBITMQ_PASSWORD
+          value: "guest"
+        - name: RABBITMQ_MANAGEMENT_PORT
+          value: "15672"
+        - name: MATRIX_MULTIPLICATION_WORKER_QUEUE
+          value: "matrix-multiplication-worker"
 
 ---
 apiVersion: v1
@@ -143,7 +148,7 @@ spec:
   selector:
     app: monitoring
   ports:
-    - port: 8006
+    - port: 8007
       targetPort: 80
   type: LoadBalancer
 
@@ -165,7 +170,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: cpu-bound-worker-api:4
+        image: cpu-bound-worker-api:1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
@@ -209,18 +214,21 @@ spec:
     spec:
       containers:
       - name: worker
-        image: cpu-bound-worker-service:7
+        image: cpu-bound-worker-service:2
         imagePullPolicy: IfNotPresent
         env:
         - name: RABBITMQ_HOST
           value: "rabbitmq-service"
+        # TODO: Move to secret vault
         - name: RABBITMQ_USER
           value: "guest"
+        # TODO: Move to secret vault
         - name: RABBITMQ_PASSWORD
           value: "guest"
         - name: RABBIT_MQ_HOST
           value: "localhost"
         - name: MATRIX_MULTIPLICATION_WORKER_QUEUE
           value: "matrix-multiplication-worker"
-        - name: SIMULATE_WORKLOAD_IN_SEC
+        # Only for load testing purposes
+        - name: SIMULATE_WORKLOAD_DURATION_IN_SEC
           value: "20"

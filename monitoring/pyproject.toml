@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "cpu-bound-workers"
+name = "cpu-bound-workers monitoring API service"
 version = "0.1.0"
-description = "CPU-bound worker scaling example"
+description = "API service that determines the scale of workers."
 authors = ["Vinko Buble <vinkobuble@gmail.com>"]
 readme = "README.md"
 package-mode = false
